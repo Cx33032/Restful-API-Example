@@ -14,20 +14,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# -*-   Coding with utf-8   -*- #
+# -*- Developed by Harryjin -*- #
+
 from django.contrib import admin
 from django.urls import path, include
 from news.views import *
-# from rest_framework.routers import DefaultRouter
-
-# router = DefaultRouter()
-# router.register(r'api/directory', NewsAgencyView)
 
 urlpatterns = [
+    # Register all of the functions into the urls
     path('admin/', admin.site.urls),
     path('api/login/', LoginView.as_view()),
     path('api/logout/', LogoutView.as_view()),
     path('api/stories/', GetStoriesView.as_view()),
     path('api/stories/<int:story_id>/', DeleteStoryView.as_view()),
     path('api/directory/', RegisterView.as_view()),
-    # path('', include(router.urls))
 ]

@@ -1,3 +1,10 @@
-from django.contrib import admin
+# -*-   Coding with utf-8   -*- #
+# -*- Developed by Harryjin -*- #
 
-# Register your models here.
+from django.contrib import admin
+from .models import UserInformation, NewsAgency, UserTokens
+
+# Register the Users to make sure website administrator can modify the information
+admin.site.register(UserInformation)
+admin.site.register(UserTokens)
+admin.site.register(NewsAgency)

@@ -1,3 +1,6 @@
+# -*-   Coding with utf-8   -*- #
+# -*- Developed by Harryjin -*- #
+
 import requests
 
 def get_information():

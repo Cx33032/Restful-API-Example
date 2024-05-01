@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+# -*-   Coding with utf-8   -*- #
+# -*- Developed by Harryjin -*- #
 
 from pathlib import Path
 
@@ -37,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'news',
+    'rest_framework', # Must include to make sure there is no import error
+    'news', # Own webapp
 ]
 
 MIDDLEWARE = [
