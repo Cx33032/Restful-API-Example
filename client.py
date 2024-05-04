@@ -3,6 +3,7 @@
 
 import requests
 
+# Information to search
 def get_information():
     cat_choice = ('pol', 'art', 'tech', 'trivia', '*')
     reg_choice = ('uk', 'eu', 'w', '*')
@@ -26,6 +27,7 @@ def get_information():
 
     return category, region
 
+# Information to post
 def get_information_post():
     cat_choice = ('pol', 'art', 'tech', 'trivia')
     reg_choice = ('uk', 'eu', 'w')
@@ -49,6 +51,11 @@ def get_information_post():
 
     return category, region
 
+'''
+User Login
+Param: login url
+Return: user token or error message
+'''
 def login(url):
     username = input("Enter your username: ")
     password = input("Enter your password: ")
@@ -64,16 +71,26 @@ def login(url):
         print(response.content)
         return ''
 
-def logout(url):
-    response = requests.post(f"{url}/api/logout/")
+'''
+User Logout
+Param: URL and user token
+Return: Response message
+'''
+def logout(url, token):
+    response = requests.post(f"{url}/api/logout/", data={'token': token})
     if response.status_code == 200:
         print("Logout successful!")
     else:
         print("Logout failed!")
 
+'''
+Post new story / news
+Param: URL and user token
+Return: Response message
+'''
 def post_story(url, token):
     title = input("Enter the story title: ")
-    category, region = get_information()
+    category, region = get_information_post()
     details = input("Enter the story details: ")
     response = requests.post(f"{url}/api/stories/", data={"title": title, "category": category, "region": region, "details": details, 'token': token})
     if response.status_code == 201:
@@ -82,6 +99,11 @@ def post_story(url, token):
         print("Failed to post story!")
         print(response.content)
 
+'''
+List news / stories
+Param: URL
+Return: Stories / Response message
+'''
 def get_stories(url):
     category, region = get_information()
     date = input("Enter the date you want to search (* for all): ")
@@ -94,6 +116,11 @@ def get_stories(url):
         print("Failed to get stories!")
         print(response.content)
 
+'''
+List news agencies
+Param: URL
+Return: News Agencies / Response message
+'''
 def list_agencies(url):
     response = requests.get(f"{url}/api/directory/")
     if response.status_code == 200:
@@ -104,6 +131,11 @@ def list_agencies(url):
         print("Failed to list agencies!")
         print(response.content)
 
+'''
+Delete stories
+Param: URL and user token
+Return: Response message
+'''
 def delete_story(url, story_key, token):
     response = requests.delete(f"{url}/api/stories/{story_key}/", data={'token': token})
     if response.status_code == 200:
@@ -113,14 +145,14 @@ def delete_story(url, story_key, token):
         print(response.content)
 
 def main():
-    url = "https://harryjin.pythonanywhere.com/"
+    url = "https://example.com/"
     token = ''
     while True:
         command = input("Enter a command: ")
         if command == "login":
             token = login(url)
         elif command == "logout":
-            logout(url)
+            logout(url, token)
         elif command == "post":
             post_story(url, token)
         elif command == "news":

@@ -183,6 +183,7 @@ class RegisterView(APIView):
         agency_code = request._request.POST.get('agency_code')
 
         try:
+            # Add a new news agency
             NewsAgency.objects.update_or_create(agency_name=agency_name, url=url, agency_code=agency_code)
             result = {'code': 201, 'msg':'News Agency Created Successfully'}
             return JsonResponse(result, status=result['code'])
