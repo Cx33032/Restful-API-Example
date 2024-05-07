@@ -2,9 +2,9 @@
 This project is using Django and rest framework from python to build the news api for news agencies and news writers to use. 
 
 ## Table of Contents
-1. [Preparation](#preparation)  
-2. [To-Do List](#to-do-list)
-3. [Functions Included](#functions-included)
+- [Preparation](#preparation)  
+- [To-Do List](#to-do-list)
+- [Functions Included](#functions-included)
 
 ## Preparation
 
@@ -30,10 +30,10 @@ python manage.py runserver
 - [ ] Password encryption
 
 ## Functions Included
-1. [User Identification](#user-identification)  
-2. [News Lookup](#news-lookup)  
-3. [News Modification](#news-modification) (Add / Delete)  
-4. [News Agency Registration](#news-agency-registration)  
+- [User Identification](#user-identification)  
+- [News Lookup](#news-lookup)  
+- [News Modification](#news-modification) (Add / Delete)  
+- [News Agency Registration](#news-agency-registration)  
 
 ### User Identification
 For the User Identification, we need a database to store users' information, so creating a model in model.py is needed.
@@ -120,6 +120,50 @@ If the user can successfully log in, the program will return a welcome message i
 
 
 ### News Lookup
+Every one has the permission to lookup the news in the database  
+Firstly, the ```grant_permission```function helps to give GET request open to everyone  
+
+```python
+'''
+news/views.py
+'''
+def grant_permission(self):
+        if self.request.method == 'GET':
+            # Everyone has the permission to find the news
+            self.permission_classes = [AllowAny]
+        else:
+            # The appending of the news can only happen after signing in
+            self.permission_classes = [IsUserAuthenticated, SessionAuthenticated]
+```
+  
+Secondly, the get method helps to load the choices and the return the search reasult
+```python
+# Search news
+def get(self, request):
+    
+    story_cat = request.data.get('story_cat', '*')
+    story_region = request.data.get('story_region', '*')
+    story_date = request.data.get('story_date', '*')
+    
+    # Find the data with the conditions provided by the users
+    if story_cat=='*':
+        stories = Story.objects.all()
+    else:
+        stories = Story.objects.filter(category=story_cat)
+    if story_region!='*':
+        stories = stories.filter(region=story_region)
+    if story_date!='*':
+        stories = stories.filter(date__gte=story_date)
+
+    # No news match the condition
+    if not stories:
+        result = {'code': 404, 'result':'News Not Found'}
+        return JsonResponse(result, status=result['code'])
+
+    # Use the serializer to output the result
+    serializer=StorySerializer(stories, many=True)
+    return JsonResponse(serializer.data, status=200, safe=False)
+```
 
 ### News Modification
 
