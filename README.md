@@ -166,5 +166,44 @@ def get(self, request):
 ```
 
 ### News Modification
+#### Append new stories
+When appending new stories, users need to send a post request with the required information to the designated url which required to login first  
+So still need ```grant_permission``` method to switch the permission class  
+```python
+'''
+news/views.py
+'''
+def grant_permission(self):
+        if self.request.method == 'GET':
+            # Everyone has the permission to find the news
+            self.permission_classes = [AllowAny]
+        else:
+            # The appending of the news can only happen after signing in
+            self.permission_classes = [IsUserAuthenticated, SessionAuthenticated]
+```
+In the ```post``` method, the program will fetch all the data transferred in the request and append those into the database  
+```python
+'''
+news/views.py
+'''
+# Append news
+def post(self, request, *args, **kwargs):
+    token = request._request.POST.get('token')
+    # Get the user
+    user = UserTokens.objects.filter(token=token).first().user.name
+    username = UserTokens.objects.filter(token=token).first().user.username
+    title = request._request.POST.get('title')
+    category = request._request.POST.get('category')
+    region = request._request.POST.get('region')
+    details = request._request.POST.get('details')
+
+    try:
+        # Append the news into the database
+        Story.objects.update_or_create(title=title,category=category,author=user,region=region,details=details,author_username=username)
+        result = {'code': 201, 'result':'News Posted'}
+    except Exception as e:
+        result = {'code': 404, 'result': 'Invalid Input'}
+    return JsonResponse(result, status=result['code'])
+```
 
 ### News Agency Registration
